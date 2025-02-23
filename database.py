@@ -37,7 +37,18 @@ class Progress(Base):
     weight = Column(Integer)  # Используемый вес
 
 # Создание базы данных
-engine = create_engine('sqlite:///client_bot.db')
+from sqlalchemy import create_engine
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # Загружаем переменные окружения
+
+# Если есть переменная окружения DATABASE_URL, используем её
+DATABASE_URL = os.getenv("DATABASE_URL")
+if DATABASE_URL:
+    engine = create_engine(DATABASE_URL)
+else:
+    engine = create_engine('sqlite:///client_bot.db')  # Локальное подключение для тестирования
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
